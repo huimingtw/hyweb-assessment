@@ -1,3 +1,8 @@
 test.pdf
 test.md
 CLAUDE.md
+.env
+bin/
+*.log
+tmp/
+logs/
