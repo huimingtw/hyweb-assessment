@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"errors"
 	"log/slog"
+	"strings"
 	"time"
 
 	"github.com/go-sql-driver/mysql"
@@ -24,6 +25,8 @@ func NewAuthService(db *sql.DB, logger *slog.Logger) *AuthService {
 }
 
 func (s *AuthService) Register(ctx context.Context, email, password string) (*model.User, error) {
+	email = strings.ToLower(email)
+
 	hash, err := bcrypt.GenerateFromPassword([]byte(password), BcryptCost)
 	if err != nil {
 		return nil, err
@@ -60,6 +63,8 @@ func (s *AuthService) Register(ctx context.Context, email, password string) (*mo
 }
 
 func (s *AuthService) Login(ctx context.Context, email, password string) (*model.User, error) {
+	email = strings.ToLower(email)
+
 	user := &model.User{}
 	err := s.db.QueryRowContext(ctx,
 		"SELECT email, password, created, updated FROM users WHERE email = ?", email,

@@ -1,5 +1,6 @@
+-- email is always stored lowercase (enforced by the service layer)
 CREATE TABLE IF NOT EXISTS users (
-    email    VARCHAR(50)  NOT NULL,
+    email    VARCHAR(50)  NOT NULL COLLATE utf8mb4_bin,
     password VARCHAR(255) NOT NULL,
     created  DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated  DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
