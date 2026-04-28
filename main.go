@@ -19,6 +19,7 @@ import (
 
 	"github.com/huimingz/hyweb-assessment/config"
 	"github.com/huimingz/hyweb-assessment/db"
+	_ "github.com/huimingz/hyweb-assessment/docs"
 	"github.com/huimingz/hyweb-assessment/handler"
 	"github.com/huimingz/hyweb-assessment/router"
 	"github.com/huimingz/hyweb-assessment/service"
