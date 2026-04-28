@@ -2,6 +2,7 @@ package config
 
 import (
 	"errors"
+	"fmt"
 	"os"
 )
 
@@ -13,21 +14,32 @@ type Config struct {
 }
 
 func Load() (*Config, error) {
-	cfg := &Config{
-		Port:          getEnv("PORT", "8080"),
-		DSN:           os.Getenv("DSN"),
-		JWTSecret:     os.Getenv("JWT_SECRET"),
-		WeatherAPIKey: os.Getenv("WEATHER_API_KEY"),
+	dbUser := os.Getenv("DB_USER")
+	dbPass := os.Getenv("DB_PASS")
+	dbName := os.Getenv("DB_NAME")
+	dbHost := getEnv("DB_HOST", "localhost:3306")
+
+	if dbUser == "" {
+		return nil, errors.New("DB_USER environment variable is required")
+	}
+	if dbPass == "" {
+		return nil, errors.New("DB_PASS environment variable is required")
+	}
+	if dbName == "" {
+		return nil, errors.New("DB_NAME environment variable is required")
 	}
 
-	if cfg.DSN == "" {
-		return nil, errors.New("DSN environment variable is required")
-	}
-	if cfg.JWTSecret == "" {
+	jwtSecret := os.Getenv("JWT_SECRET")
+	if jwtSecret == "" {
 		return nil, errors.New("JWT_SECRET environment variable is required")
 	}
 
-	return cfg, nil
+	return &Config{
+		Port:          getEnv("PORT", "8080"),
+		DSN:           fmt.Sprintf("%s:%s@tcp(%s)/%s?parseTime=true&loc=UTC", dbUser, dbPass, dbHost, dbName),
+		JWTSecret:     jwtSecret,
+		WeatherAPIKey: os.Getenv("WEATHER_API_KEY"),
+	}, nil
 }
 
 func getEnv(key, defaultVal string) string {

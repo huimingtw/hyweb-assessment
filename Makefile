@@ -5,7 +5,7 @@ build:
 	go build -o bin/server .
 
 swag:
-	swag init -g main.go --output docs
+	swag init --parseDependency --parseInternal -g main.go --output docs
 
 docker-up:
 	docker-compose up --build
