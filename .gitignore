@@ -1,6 +1,7 @@
 test.pdf
 test.md
 CLAUDE.md
+.claude/
 .env
 bin/
 *.log
