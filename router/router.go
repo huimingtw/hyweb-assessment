@@ -29,6 +29,9 @@ func New(h *handler.Handler, cfg *config.Config, logger *slog.Logger) *gin.Engin
 		{
 			user.PUT("/password", h.ChangePassword)
 		}
+
+		v1.GET("/weather", h.GetWeather)
+		v1.GET("/weather/me", middleware.JWTAuth(cfg.JWTSecret), h.GetWeatherMe)
 	}
 
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))

@@ -11,23 +11,26 @@ import (
 )
 
 type Handler struct {
-	authSvc *service.AuthService
-	userSvc *service.UserService
-	cfg     *config.Config
-	logger  *slog.Logger
+	authSvc    *service.AuthService
+	userSvc    *service.UserService
+	weatherSvc *service.WeatherService
+	cfg        *config.Config
+	logger     *slog.Logger
 }
 
 func NewHandler(
 	authSvc *service.AuthService,
 	userSvc *service.UserService,
+	weatherSvc *service.WeatherService,
 	cfg *config.Config,
 	logger *slog.Logger,
 ) *Handler {
 	return &Handler{
-		authSvc: authSvc,
-		userSvc: userSvc,
-		cfg:     cfg,
-		logger:  logger,
+		authSvc:    authSvc,
+		userSvc:    userSvc,
+		weatherSvc: weatherSvc,
+		cfg:        cfg,
+		logger:     logger,
 	}
 }
 

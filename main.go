@@ -43,8 +43,18 @@ func main() {
 
 	authSvc := service.NewAuthService(database, logger)
 	userSvc := service.NewUserService(database, logger)
+	weatherSvc := service.NewWeatherService(database, logger, cfg.WeatherAPIKey,
+		&http.Client{Timeout: 10 * time.Second})
 
-	h := handler.NewHandler(authSvc, userSvc, cfg, logger)
+	go func() {
+		weatherSvc.FetchAndStore(context.Background())
+		for {
+			time.Sleep(24 * time.Hour)
+			weatherSvc.FetchAndStore(context.Background())
+		}
+	}()
+
+	h := handler.NewHandler(authSvc, userSvc, weatherSvc, cfg, logger)
 	r := router.New(h, cfg, logger)
 
 	srv := &http.Server{
