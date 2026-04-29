@@ -6,6 +6,7 @@ RESTful API built with Go + Gin + MySQL.
 
 - Go 1.22+
 - Docker + Docker Compose
+- [swag](https://github.com/swaggo/swag) CLI (for Swagger regeneration): `go install github.com/swaggo/swag/cmd/swag@latest`
 
 ---
 
@@ -15,7 +16,7 @@ RESTful API built with Go + Gin + MySQL.
 cp .env.example .env
 # Edit .env with your values
 
-docker-compose up --build
+make docker-up
 ```
 
 The API will be available at `http://localhost:8080`.  
@@ -38,6 +39,7 @@ Swagger UI: `http://localhost:8080/swagger/index.html`
    export DB_NAME=hyweb
    export DB_HOST=localhost:3306
    export JWT_SECRET=your-secret
+   export WEATHER_API_KEY=CWA-your-key   # optional; weather fetch skipped if empty
    ```
 
 3. Apply the schema to your local MySQL:
@@ -47,8 +49,20 @@ Swagger UI: `http://localhost:8080/swagger/index.html`
 
 4. Run the server:
    ```bash
-   go run .
+   make dev
    ```
+
+---
+
+## Make Commands
+
+| Command | Description |
+|---------|-------------|
+| `make dev` | Run with `go run main.go` |
+| `make build` | Build binary to `bin/server` |
+| `make swag` | Regenerate Swagger docs |
+| `make docker-up` | Build and start containers |
+| `make docker-down` | Stop and remove containers |
 
 ---
 
@@ -74,6 +88,13 @@ make swag
 | Method | Path | Auth | Description |
 |--------|------|------|-------------|
 | PUT | `/api/v1/user/password` | Bearer JWT | Change password |
+
+### Weather (bonus)
+
+| Method | Path | Auth | Description |
+|--------|------|------|-------------|
+| GET | `/api/v1/weather` | No | Today's New Taipei City weather (public) |
+| GET | `/api/v1/weather/me` | Bearer JWT | Today's New Taipei City weather (protected) |
 
 ---
 
@@ -101,14 +122,12 @@ curl -X PUT http://localhost:8080/api/v1/user/password \
   -d '{"old_password":"secret123","new_password":"newpass456"}'
 ```
 
----
+### Get Weather (public)
+```bash
+curl http://localhost:8080/api/v1/weather
+```
 
-## Make Commands
-
-| Command | Description |
-|---------|-------------|
-| `make dev` | Run with `go run .` |
-| `make build` | Build binary to `bin/server` |
-| `make swag` | Regenerate Swagger docs |
-| `make docker-up` | Build and start containers |
-| `make docker-down` | Stop and remove containers |
+### Get Weather (protected)
+```bash
+curl -H "Authorization: Bearer <token>" http://localhost:8080/api/v1/weather/me
+```
